@@ -1,0 +1,55 @@
+# Core scientific Python
+numpy>=1.24.0
+scipy>=1.10.0
+pandas>=2.0.0
+
+# Machine learning
+scikit-learn>=1.3.0
+xgboost>=2.0.0
+lightgbm>=4.0.0
+
+# Deep learning (CPU build by default; swap for CUDA build via torch.org)
+torch>=2.0.0
+torchvision>=0.15.0
+
+# Uncertainty quantification
+uncertainty-calibration>=0.1.3
+
+# Data handling
+h5py>=3.9.0
+tables>=3.8.0
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+tqdm>=4.66.0
+
+# Nuclear data parsing
+# openmc is optional; install separately if available:
+#   conda install -c conda-forge openmc
+# ENDFtk for ENDF-6 format parsing (optional)
+# ENDFtk>=0.4.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.15.0
+
+# Jupyter
+jupyter>=1.0.0
+jupyterlab>=4.0.0
+ipywidgets>=8.0.0
+nbformat>=5.9.0
+
+# Configuration and utilities
+pyyaml>=6.0
+click>=8.1.0
+joblib>=1.3.0
+loguru>=0.7.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Code quality
+black>=23.0.0
+flake8>=6.0.0

@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Data (raw and processed data are large; track via DVC or document separately)
+data/raw/
+data/processed/
+data/external/*.dat
+data/external/*.csv
+!data/external/.gitkeep
+
+# Model checkpoints and results
+results/models/*.pkl
+results/models/*.pt
+results/models/*.json
+results/predictions/*.csv
+results/predictions/*.h5
+
+# Keep directory structure
+!results/figures/.gitkeep
+!results/models/.gitkeep
+!results/predictions/.gitkeep
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/external/.gitkeep
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/

@@ -1,0 +1,134 @@
+# Nuclear Cross-Section ML Configuration
+
+data:
+  exfor:
+    base_url: "https://nds.iaea.org/exfor/services"
+    api_url: "https://nds.iaea.org/exfor/services/entries/json"
+    reaction_types:
+      - "N,TOT"    # Total cross-section
+      - "N,EL"     # Elastic scattering
+      - "N,G"      # Radiative capture (n,gamma)
+      - "N,F"      # Fission
+      - "N,2N"     # (n,2n) reaction
+      - "N,A"      # (n,alpha) reaction
+      - "N,P"      # (n,p) reaction
+    energy_min_eV: 1.0e-5     # Thermal neutrons
+    energy_max_MeV: 20.0      # Upper limit (fission spectrum edge)
+    max_retries: 3
+    retry_delay_s: 2.0
+
+  endf:
+    base_url: "https://www.nndc.bnl.gov/endf"
+    library: "ENDF/B-VIII.0"
+    download_dir: "data/raw/endf"
+
+  ame:
+    url: "https://www-nds.iaea.org/amdc/ame2020/mass_1.mas20.txt"
+    local_path: "data/external/ame2020_mass.txt"
+
+  nubase:
+    url: "https://www-nds.iaea.org/amdc/ame2020/nubase_4.mas20.txt"
+    local_path: "data/external/nubase2020.txt"
+
+  frdm:
+    local_path: "data/external/frdm2012_deformation.dat"
+
+features:
+  nuclear_structure:
+    - Z             # Proton number
+    - N             # Neutron number
+    - A             # Mass number
+    - Z_even        # Z even/odd parity (0 or 1)
+    - N_even        # N even/odd parity (0 or 1)
+    - isospin_asym  # (N-Z)/A
+    - surface_area  # A^(2/3) proportional to nuclear surface
+    - binding_energy_per_A  # B/A in MeV from AME2020
+    - Sn            # One-neutron separation energy (MeV)
+    - S2n           # Two-neutron separation energy (MeV)
+    - Sp            # One-proton separation energy (MeV)
+    - S2p           # Two-proton separation energy (MeV)
+    - delta_n       # Neutron pairing gap (MeV)
+    - delta_p       # Proton pairing gap (MeV)
+    - spin          # Ground state spin (hbar)
+    - parity        # Ground state parity (+1 or -1)
+    - beta2         # Quadrupole deformation from FRDM
+    - beta4         # Hexadecapole deformation from FRDM
+    - dist_to_magic_Z    # Distance to nearest magic proton number
+    - dist_to_magic_N    # Distance to nearest magic neutron number
+    - Q_value            # Reaction Q-value (MeV)
+    - log_energy_eV      # log10 of incident neutron energy in eV
+
+  magic_numbers:
+    proton: [2, 8, 20, 28, 50, 82]
+    neutron: [2, 8, 20, 28, 50, 82, 126]
+
+  target_variable: "log10_cross_section_barn"
+
+models:
+  xgboost:
+    n_estimators: 1000
+    max_depth: 6
+    learning_rate: 0.05
+    subsample: 0.8
+    colsample_bytree: 0.8
+    reg_alpha: 0.1
+    reg_lambda: 1.0
+    min_child_weight: 5
+    objective: "reg:squarederror"
+    eval_metric: "rmse"
+    early_stopping_rounds: 50
+    quantile_alphas: [0.05, 0.16, 0.50, 0.84, 0.95]
+
+  random_forest:
+    n_estimators: 500
+    max_depth: 20
+    min_samples_leaf: 5
+    max_features: "sqrt"
+    bootstrap: true
+    oob_score: true
+    n_jobs: -1
+
+  neural_network:
+    hidden_dims: [256, 256, 128, 64]
+    dropout_rate: 0.2
+    learning_rate: 1.0e-3
+    weight_decay: 1.0e-4
+    batch_size: 256
+    max_epochs: 200
+    patience: 20
+    mc_dropout_samples: 100
+    activation: "relu"
+
+training:
+  test_fraction: 0.15
+  val_fraction: 0.10
+  random_seed: 42
+  cv_folds: 5
+  cross_validation_strategy: "leave_one_isotope_out"
+
+evaluation:
+  mass_regions:
+    light: [1, 40]
+    medium: [41, 100]
+    heavy: [101, 209]
+    actinide: [210, 260]
+  metrics:
+    - "rmse"
+    - "mae"
+    - "r2"
+    - "picp_68"   # Prediction interval coverage probability at 68%
+    - "picp_95"   # Prediction interval coverage probability at 95%
+    - "mean_interval_width_68"
+    - "mean_interval_width_95"
+
+output:
+  results_dir: "results"
+  figures_dir: "results/figures"
+  models_dir: "results/models"
+  predictions_dir: "results/predictions"
+  figure_dpi: 300
+  figure_format: "pdf"
+
+logging:
+  level: "INFO"
+  log_file: "results/training.log"

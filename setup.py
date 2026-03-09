@@ -1,0 +1,56 @@
+from setuptools import setup, find_packages
+
+setup(
+    name="nuclear-cross-section-ml",
+    version="0.1.0",
+    description="Machine learning prediction of neutron cross-sections for unmeasured isotopes",
+    author="Fazil Firdous",
+    license="MIT",
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
+    python_requires=">=3.9",
+    install_requires=[
+        "numpy>=1.24.0",
+        "scipy>=1.10.0",
+        "pandas>=2.0.0",
+        "scikit-learn>=1.3.0",
+        "xgboost>=2.0.0",
+        "torch>=2.0.0",
+        "h5py>=3.9.0",
+        "requests>=2.31.0",
+        "tqdm>=4.66.0",
+        "matplotlib>=3.7.0",
+        "seaborn>=0.12.0",
+        "pyyaml>=6.0",
+        "click>=8.1.0",
+        "joblib>=1.3.0",
+        "loguru>=0.7.0",
+    ],
+    extras_require={
+        "dev": [
+            "pytest>=7.4.0",
+            "pytest-cov>=4.1.0",
+            "black>=23.0.0",
+            "flake8>=6.0.0",
+            "jupyter>=1.0.0",
+        ],
+    },
+    entry_points={
+        "console_scripts": [
+            "ncs-download=scripts.download_data:main",
+            "ncs-build=scripts.build_dataset:main",
+            "ncs-train=scripts.train_models:main",
+            "ncs-predict=scripts.predict:main",
+        ],
+    },
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Science/Research",
+        "Topic :: Scientific/Engineering :: Physics",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+    ],
+)
